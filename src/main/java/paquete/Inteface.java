@@ -2,25 +2,27 @@ package paquete;
 // @author vikchio
 
 import java.sql.*;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Inteface extends javax.swing.JFrame
 {
-    
+
     String base = "jdbc:mysql://localhost/BDEmpleados";
     String usuario = "Pepe";
     String contraseña = "12345";
     Connection conexion;
     DefaultTableModel modelo = new DefaultTableModel();
     Statement ejecutor = null;
-    
+
+    int carga = 0;
     protected void cargarBD()
     {
-        modelo.addColumn("emp_no");
-        modelo.addColumn("birth_date");
-        modelo.addColumn("first_name");
-        modelo.addColumn("last_name");
-        modelo.addColumn("hire_date");
+        modelo.addColumn("Numero Empleado");
+        modelo.addColumn("Fecha Nacimiento");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Apellido");
+        modelo.addColumn("Fecha Contratacion");
         modelo.setRowCount(0);
         String datos[] = new String[5];
         String query = "SELECT * FROM employees";
@@ -43,10 +45,10 @@ public class Inteface extends javax.swing.JFrame
         }
         catch (Exception e)
         {
-            
+
         }
     }
-    
+
     public void conectar()
     {
         conexion = null;
@@ -63,33 +65,41 @@ public class Inteface extends javax.swing.JFrame
             estadoCon.setText("No Conectado");
         }
     }
-    protected void buscarTabla(String fnacimiento,String prNombre,String apellido, String fcont){
+
+    protected void buscarTabla(String fnacimiento, String prNombre, String apellido, String fcont)
+    {
         modelo.setRowCount(0);
-        String datos[]=new String[5];
-        String where=" where 1=1 ";
+        String datos[] = new String[5];
+        String where = " where 1=1 ";
         //Si la fecha de nacimiento no esta vacio
-        if(fnacimiento.isEmpty()==false){
-            where=where+" and birth_date='"+fnacimiento+"' ";
+        if (fnacimiento.isEmpty() == false)
+        {
+            where = where + " and birth_date='" + fnacimiento + "' ";
         }
         //Si nombre no esta vacio
-        if(prNombre.isEmpty()==false){
-            where=where+" and first_name='"+prNombre+"' ";
+        if (prNombre.isEmpty() == false)
+        {
+            where = where + " and first_name='" + prNombre + "' ";
         }
         //Si apellido no esta vacio
-        if(apellido.isEmpty()==false){
-            where=where+" and last_name='"+apellido+"' ";
+        if (apellido.isEmpty() == false)
+        {
+            where = where + " and last_name='" + apellido + "' ";
         }
         //Si fecha contratracion no esta vacio
-        if(fcont.isEmpty()==false){
-            where=where+" and hire_date='"+fcont+"' ";
+        if (fcont.isEmpty() == false)
+        {
+            where = where + " and hire_date='" + fcont + "' ";
         }
-        String query="select * from employees "+where+" ;";
+        String query = "select * from employees " + where + " ;";
         ResultSet rs;
-        try {
-            ejecutor=conexion.createStatement();
+        try
+        {
+            ejecutor = conexion.createStatement();
             ejecutor.setQueryTimeout(20);
-            rs=ejecutor.executeQuery(query);
-            while(rs.next()==true){
+            rs = ejecutor.executeQuery(query);
+            while (rs.next() == true)
+            {
                 datos[0] = rs.getString("emp_no");
                 datos[1] = rs.getString("birth_date");
                 datos[2] = rs.getString("first_name");
@@ -99,15 +109,18 @@ public class Inteface extends javax.swing.JFrame
             }
             tabla.setModel(modelo);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
         }
     }
+
     public Inteface()
     {
         initComponents();
         conectar();
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents()
@@ -221,10 +234,9 @@ public class Inteface extends javax.swing.JFrame
                                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(apellido, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(fcont)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))))
-                        .addGap(0, 15, Short.MAX_VALUE)))
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -257,7 +269,16 @@ public class Inteface extends javax.swing.JFrame
 
     private void llenarTablaActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_llenarTablaActionPerformed
     {//GEN-HEADEREND:event_llenarTablaActionPerformed
-        cargarBD();
+
+        if(carga==0)
+        {
+            cargarBD();
+            carga++;
+        }
+        else{
+            JOptionPane.showMessageDialog (this, /*texto que sale*/"Ya ha cargado la tabla",/*Nombre ventana*/"Aviso", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
     }//GEN-LAST:event_llenarTablaActionPerformed
 
     private void prNombreActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_prNombreActionPerformed
@@ -277,9 +298,9 @@ public class Inteface extends javax.swing.JFrame
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
     {//GEN-HEADEREND:event_jButton1ActionPerformed
-        buscarTabla(fnacimiento.getText(),prNombre.getText(),apellido.getText(),fcont.getText());
+        buscarTabla(fnacimiento.getText(), prNombre.getText(), apellido.getText(), fcont.getText());
     }//GEN-LAST:event_jButton1ActionPerformed
-    
+
     public static void main(String args[])
     {
         /* Set the Nimbus look and feel */
